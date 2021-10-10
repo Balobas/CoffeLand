@@ -47,6 +47,13 @@ func(a *Administrator) HasAddBlogPostsAccess() error {
 	return nil
 }
 
+func(a *Administrator) HasAddPlaceInfoAccess() error {
+	if a.Access != AdministratorAccessMiddle && a.Access != AdministratorAccessHigh {
+		return AccessError
+	}
+	return nil
+}
+
 func(a *Administrator) Validate() error {
 	//hashParams := []byte(a.FirstName)
 	//hashParams = append(hashParams, []byte(a.LastName)...)

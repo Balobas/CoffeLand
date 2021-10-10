@@ -27,12 +27,16 @@ func bindRoutes(router *gin.Engine, ctx ApiContext) {
 	router.POST("/admin/put_product", AdminAPI{}.PutProduct(ctx))
 	router.POST("/admin/put_discount", AdminAPI{}.PutDiscount(ctx))
 	router.POST("/admin/put_administrator", AdminAPI{}.PutAdministrator(ctx))
+	router.POST("/admin/put_place_info", AdminAPI{}.PutPlaceInfo(ctx))
 
 	router.GET("/get_products_by_filters", UserAPI{}.GetProductsByFilters(ctx))
 	router.GET("/get_all_products", UserAPI{}.GetAllProducts(ctx))
 	router.GET("/get_discount_by_name_like", UserAPI{}.GetDiscountByNameLike(ctx))
 	router.GET("/actual_discounts", UserAPI{}.GetActualDiscounts(ctx))
 	router.GET("/discounts_by_product_type", UserAPI{}.GetDiscountsByProductType(ctx))
+	router.GET("/place_info_by_id", UserAPI{}.GetPlaceInfoByID(ctx))
+	router.GET("/place_info_by_address", UserAPI{}.GetPlaceInfoByAddressLike(ctx))
+	router.GET("/place_info_is_open", UserAPI{}.IsOpenPlaceInfo(ctx))
 
 	router.GET("/admin/get_products_by_filters", UserAPI{}.GetProductsByFilters(ctx))
 	router.GET("/admin/get_all_products", UserAPI{}.GetAllProducts(ctx))

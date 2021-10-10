@@ -36,14 +36,12 @@ var (
 		DiscountRepo: nil,
 		ProductRepo:  nil,
 		BlogPostRepo: nil,
-		Hasher:       nil,
-		Auth:         nil,
 	}
 )
 
 
 func TestNewAdministratorUsecases(t *testing.T) {
-	adminUsecases, err := NewAdministratorUsecases(CoreMock, "123")
+	adminUsecases, err := NewAdministratorUsecases(&CoreMock, "123")
 	if err != nil {
 		t.Error(err)
 		t.FailNow()
@@ -53,7 +51,7 @@ func TestNewAdministratorUsecases(t *testing.T) {
 }
 
 func TestAdministratorUsecases_PutAdministrator(t *testing.T) {
-	adminUsecases, err := NewAdministratorUsecases(CoreMock, "123")
+	adminUsecases, err := NewAdministratorUsecases(&CoreMock, "123")
 	if err != nil {
 		t.Error(err)
 		t.FailNow()

@@ -105,9 +105,10 @@ func(api *UserAPI) GetDiscountByNameLike(apiCtx ApiContext) func(ctx *gin.Contex
 			Error:    nil,
 		}
 
-		if ctx.Request.Method != http.MethodGet {
+		err := json.NewDecoder(ctx.Request.Body).Decode(params)
+		if err != nil {
 			ctx.Writer.WriteHeader(http.StatusBadRequest)
-			returnParams.Error = errors.New("wrong method")
+			returnParams.Error = err
 			return
 		}
 
@@ -173,9 +174,10 @@ func(api *UserAPI) GetDiscountsByProductType(apiCtx ApiContext) func(ctx *gin.Co
 			Error:    nil,
 		}
 
-		if ctx.Request.Method != http.MethodGet {
+		err := json.NewDecoder(ctx.Request.Body).Decode(params)
+		if err != nil {
 			ctx.Writer.WriteHeader(http.StatusBadRequest)
-			returnParams.Error = errors.New("wrong method")
+			returnParams.Error = err
 			return
 		}
 
@@ -210,9 +212,10 @@ func(api *UserAPI) GetBlogPostByNameLike(apiCtx ApiContext) func(ctx *gin.Contex
 			Error:    nil,
 		}
 
-		if ctx.Request.Method != http.MethodGet {
+		err := json.NewDecoder(ctx.Request.Body).Decode(params)
+		if err != nil {
 			ctx.Writer.WriteHeader(http.StatusBadRequest)
-			returnParams.Error = errors.New("wrong method")
+			returnParams.Error = err
 			return
 		}
 
@@ -258,6 +261,119 @@ func(api *UserAPI) GetAllBlogPosts(apiCtx ApiContext) func(ctx *gin.Context) {
 		}
 
 		returnParams.Posts = []interface{}{posts}
+
+		ctx.Writer.WriteHeader(http.StatusOK)
+		WriteResult(ctx.Writer, returnParams)
+	}
+}
+
+// place info
+
+func(api *UserAPI) GetPlaceInfoByID(apiCtx ApiContext) func(ctx *gin.Context) {
+	return func(ctx *gin.Context) {
+		params := struct {
+			ID string `json:"id"`
+		}{}
+
+		returnParams := struct {
+			Info []interface{} `json:"info"`
+			Error    error
+		}{
+			Info: []interface{}{},
+			Error:    nil,
+		}
+
+		err := json.NewDecoder(ctx.Request.Body).Decode(params)
+		if err != nil {
+			ctx.Writer.WriteHeader(http.StatusBadRequest)
+			returnParams.Error = err
+			return
+		}
+
+		infoUsecase := usecases.NewPlaceInfoUsecases(apiCtx.Core)
+
+		info, err := infoUsecase.GetByID(params.ID)
+		if err != nil {
+			ctx.Writer.WriteHeader(http.StatusBadRequest)
+			returnParams.Error = err
+			return
+		}
+
+		returnParams.Info = []interface{}{info}
+
+		ctx.Writer.WriteHeader(http.StatusOK)
+		WriteResult(ctx.Writer, returnParams)
+	}
+}
+
+func(api *UserAPI) GetPlaceInfoByAddressLike(apiCtx ApiContext) func(ctx *gin.Context) {
+	return func(ctx *gin.Context) {
+		params := struct {
+			Address string `json:"address"`
+		}{}
+
+		returnParams := struct {
+			Info []interface{} `json:"info"`
+			Error    error
+		}{
+			Info: []interface{}{},
+			Error:    nil,
+		}
+
+		err := json.NewDecoder(ctx.Request.Body).Decode(params)
+		if err != nil {
+			ctx.Writer.WriteHeader(http.StatusBadRequest)
+			returnParams.Error = err
+			return
+		}
+
+		infoUsecase := usecases.NewPlaceInfoUsecases(apiCtx.Core)
+
+		info, err := infoUsecase.GetByAddressLike(params.Address)
+		if err != nil {
+			ctx.Writer.WriteHeader(http.StatusBadRequest)
+			returnParams.Error = err
+			return
+		}
+
+		returnParams.Info = []interface{}{info}
+
+		ctx.Writer.WriteHeader(http.StatusOK)
+		WriteResult(ctx.Writer, returnParams)
+	}
+}
+
+func(api *UserAPI) IsOpenPlaceInfo(apiCtx ApiContext) func(ctx *gin.Context) {
+	return func(ctx *gin.Context) {
+		params := struct {
+			ID string `json:"id"`
+		}{}
+
+		returnParams := struct {
+			IsOpen bool `json:"isOpen"`
+			Error    error
+		}{
+			IsOpen: false,
+			Error:    nil,
+		}
+
+		err := json.NewDecoder(ctx.Request.Body).Decode(params)
+		if err != nil {
+			ctx.Writer.WriteHeader(http.StatusBadRequest)
+			returnParams.Error = err
+			return
+		}
+
+		infoUsecase := usecases.NewPlaceInfoUsecases(apiCtx.Core)
+
+		isOpen, err := infoUsecase.IsOpen(params.ID)
+		if err != nil {
+			ctx.Writer.WriteHeader(http.StatusBadRequest)
+			returnParams.Error = err
+			return
+		}
+
+		returnParams.IsOpen = isOpen
 
 		ctx.Writer.WriteHeader(http.StatusOK)
 		WriteResult(ctx.Writer, returnParams)

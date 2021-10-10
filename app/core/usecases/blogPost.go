@@ -7,10 +7,10 @@ import (
 )
 
 type BlogPostUsecases struct {
-	data.Core
+	*data.Core
 }
 
-func NewBlogPostUsecases(core data.Core) *BlogPostUsecases {
+func NewBlogPostUsecases(core *data.Core) *BlogPostUsecases {
 	return &BlogPostUsecases{core}
 }
 

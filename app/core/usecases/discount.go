@@ -7,10 +7,10 @@ import (
 )
 
 type DiscountUsecases struct {
-	data.Core
+	*data.Core
 }
 
-func NewDiscountUsecases(core data.Core) *DiscountUsecases {
+func NewDiscountUsecases(core *data.Core) *DiscountUsecases {
 	return &DiscountUsecases{core}
 }
 

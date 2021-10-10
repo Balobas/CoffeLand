@@ -20,5 +20,6 @@ type Core struct {
 	DiscountRepo DiscountsRepository
 	ProductRepo ProductsRepository
 	BlogPostRepo BlogPostRepository
+	PlaceInfoRepo PlaceInfoRepository
 }
 

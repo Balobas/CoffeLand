@@ -8,10 +8,10 @@ import (
 
 type AdministratorUsecases struct {
 	Admin data.Administrator
-	Core data.Core
+	Core *data.Core
 }
 
-func NewAdministratorUsecases(core data.Core, adminId string) (*AdministratorUsecases, error) {
+func NewAdministratorUsecases(core *data.Core, adminId string) (*AdministratorUsecases, error) {
 	admin, err := core.AdminRepo.GetByID(adminId)
 	if err != nil {
 		return nil, errors.WithStack(err)
@@ -56,4 +56,11 @@ func(a *AdministratorUsecases) PutBlogPost(post data.BlogPost) (string, error) {
 		return "", errors.WithStack(err)
 	}
 	return NewBlogPostUsecases(a.Core).put(post)
+}
+
+func(a *AdministratorUsecases) PutPlaceInfo(info data.PlaceInfo) (string, error) {
+	if err := a.Admin.HasAddPlaceInfoAccess(); err != nil {
+		return "", errors.WithStack(err)
+	}
+	return NewPlaceInfoUsecases(a.Core).put(info)
 }

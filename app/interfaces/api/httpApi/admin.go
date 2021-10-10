@@ -12,7 +12,7 @@ import (
 type AdminAPI struct { }
 
 type ApiContext struct {
-	Core data.Core
+	Core *data.Core
 	ExecutorId string
 }
 
@@ -36,12 +36,6 @@ func(api *AdminAPI) PutDiscount(apiCtx ApiContext) func(*gin.Context) {
 		returnParams := ReturnParams{
 			Id:    "",
 			Error: nil,
-		}
-
-		if ctx.Request.Method != http.MethodPost {
-			ctx.Writer.WriteHeader(http.StatusBadRequest)
-			returnParams.Error = errors.New("wrong method")
-			return
 		}
 
 		err := json.NewDecoder(ctx.Request.Body).Decode(params)
@@ -91,12 +85,6 @@ func(api *AdminAPI) PutProduct(apiCtx ApiContext) func(*gin.Context) {
 			Error: nil,
 		}
 
-		if ctx.Request.Method != http.MethodPost {
-			ctx.Writer.WriteHeader(http.StatusBadRequest)
-			returnParams.Error = errors.New("wrong method")
-			return
-		}
-
 		err := json.NewDecoder(ctx.Request.Body).Decode(params)
 		if err != nil {
 			ctx.Writer.WriteHeader(http.StatusBadRequest)
@@ -142,12 +130,6 @@ func(api *AdminAPI) PutAdministrator(apiCtx ApiContext) func(*gin.Context) {
 		returnParams := ReturnParams{
 			Id:    "",
 			Error: nil,
-		}
-
-		if ctx.Request.Method != http.MethodPost {
-			ctx.Writer.WriteHeader(http.StatusBadRequest)
-			returnParams.Error = errors.New("wrong method")
-			return
 		}
 
 		err := json.NewDecoder(ctx.Request.Body).Decode(params)
@@ -221,6 +203,55 @@ func(api *AdminAPI) PutBlogPost(apiCtx ApiContext) func(ctx *gin.Context) {
 			Title: params.Title,
 			Text:  params.Text,
 			Date:  params.Date,
+		})
+
+		returnParams.Id = id
+
+		ctx.Writer.WriteHeader(http.StatusOK)
+		WriteResult(ctx.Writer, returnParams)
+	}
+}
+
+type PlaceInfoParams struct {
+	ID string `json:"id"`
+	Address string `json:"address"`
+	Phone string `json:"phone"`
+	HoursOfWork string `json:"hoursOfWork"`
+	CoordsLat string `json:"coordsLat"`
+	CoordsLon string `json:"coordsLon"`
+	IsOpen bool `json:"isOpen"`
+}
+
+func(api *AdminAPI) PutPlaceInfo(apiCtx ApiContext) func(ctx *gin.Context) {
+	return func(ctx *gin.Context) {
+		params := &PlaceInfoParams{}
+		returnParams := ReturnParams{
+			Id:    "",
+			Error: nil,
+		}
+
+		err := json.NewDecoder(ctx.Request.Body).Decode(params)
+		if err != nil {
+			ctx.Writer.WriteHeader(http.StatusBadRequest)
+			returnParams.Error = err
+			return
+		}
+
+		adminUsecase, err := usecases.NewAdministratorUsecases(apiCtx.Core, apiCtx.ExecutorId)
+		if err != nil {
+			ctx.Writer.WriteHeader(http.StatusBadRequest)
+			returnParams.Error = err
+			return
+		}
+
+		id, err := adminUsecase.PutPlaceInfo(data.PlaceInfo{
+			ID:          params.ID,
+			Address:     params.Address,
+			Phone:       params.Phone,
+			HoursOfWork: params.HoursOfWork,
+			CoordsLat:   params.CoordsLat,
+			CoordsLon:   params.CoordsLon,
+			IsOpen:      params.IsOpen,
 		})
 
 		returnParams.Id = id
